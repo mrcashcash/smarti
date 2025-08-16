@@ -1,0 +1,41 @@
+services:
+  backend:
+    build:
+      context: ./smarti-backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file:
+      - ./smarti-backend/.env.docker
+    volumes:
+      - ./smarti-backend:/app:delegated
+      # Cache composer dependencies to speed up restarts
+      - composer_cache:/composer/cache
+      - vendor_cache:/app/vendor
+    ports:
+      - "8000:8000"
+    # Add health check to determine when backend is ready
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    # Remove the long command - let entrypoint handle it
+    command: ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+
+  frontend:
+    build:
+      context: ./smarti-frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      backend:
+        # Wait for backend to be healthy, not just started
+        condition: service_healthy
+    ports:
+      - "4200:80"
+
+# Named volumes for caching
+volumes:
+  composer_cache:
+  vendor_cache:

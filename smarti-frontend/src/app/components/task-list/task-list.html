@@ -1,0 +1,81 @@
+<div class="container">
+  <div class="form-container">
+    <h2>Create a New Task</h2>
+    <form (ngSubmit)="createTask()" class="task-form">
+      <div class="form-group">
+        <label for="title">Title</label>
+        <input
+          id="title"
+          [(ngModel)]="newTask.title"
+          name="title"
+          required
+          placeholder="Enter task title"
+        />
+      </div>
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea
+          id="description"
+          [(ngModel)]="newTask.description"
+          name="description"
+          placeholder="Enter task description (optional)"
+        ></textarea>
+      </div>
+      <button type="submit" class="btn-save" [disabled]="isLoading">
+        Save Task
+        <span *ngIf="isLoading" class="spinner"></span>
+      </button>
+    </form>
+  </div>
+
+  <div class="task-list-container">
+    <div class="task-list-header">
+      <h2>
+        Your Tasks
+        <span *ngIf="isLoading" class="spinner"></span>
+      </h2>
+      <div class="filter-container">
+        <input
+          #searchBox
+          (input)="search(searchBox.value)"
+          placeholder="Filter tasks by title..."
+          class="filter-input"
+        />
+      </div>
+    </div>
+
+    <div *ngIf="isLoading && tasks.length === 0; else showTasksOrEmpty">
+      <p class="no-tasks-message">
+        Loading tasks...
+        <span class="spinner"></span>
+      </p>
+    </div>
+
+    <ng-template #showTasksOrEmpty>
+      <ul *ngIf="tasks.length > 0; else noTasks" class="task-list">
+        <li *ngFor="let task of tasks" class="task-item">
+          <div class="task-details">
+            <h3 class="task-title">{{ task.title }}</h3>
+            <p class="task-description">{{ task.description }}</p>
+          </div>
+          <button
+            (click)="deleteTask(task.id)"
+            class="btn-delete"
+            [disabled]="task.id != null && deletingIds.has(task.id)"
+          >
+            Delete
+            <span
+              *ngIf="task.id != null && deletingIds.has(task.id)"
+              class="spinner"
+            ></span>
+          </button>
+        </li>
+      </ul>
+      <ng-template #noTasks>
+        <p class="no-tasks-message">
+          No tasks found. Add one above or try a different filter!
+        </p>
+      </ng-template>
+    </ng-template>
+  </div>
+</div>
