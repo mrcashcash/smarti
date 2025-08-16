@@ -18,6 +18,25 @@ cd smarti
 
 ---
 
+### Automated Setup (Experimental)
+
+For a quicker setup, you can use the provided scripts to automate the installation and running of the development environment. These scripts are not fully tested and may require adjustments based on your system configuration.
+
+#### On Windows
+
+```sh
+.\Scripts\run_local.bat
+```
+
+#### On macOS/Linux
+
+```sh
+chmod +x Scripts/run_local.sh
+./Scripts/run_local.sh
+```
+
+---
+
 ### Manual Setup
 
 You will need two separate terminals for the manual setup.
@@ -45,9 +64,9 @@ You will need two separate terminals for the manual setup.
     DB_CONNECTION=sqlite
     DB_DATABASE=database/database.sqlite
     ```
-6.  **Run database migrations (and seeders for demo data):**
+6.  **Run database migrations (Not really Needed- Demo DB exist):**
     ```sh
-    php artisan migrate --seed
+    php artisan migrate
     ```
 7.  **Start the server:**
     ```sh
@@ -88,3 +107,5 @@ From the root directory of the project:
     ```sh
     docker-compose down
     ```
+
+---
